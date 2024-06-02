@@ -7,5 +7,4 @@ import os
 load_dotenv()
 # IBMProvider.save_account(token=os.getenv("IBMQ_API_KEY"))
 provider = IBMProvider(token=os.getenv("IBMQ_API_KEY"))
-# provider = IBMProvider()
-# service = QiskitRuntimeService(channel="ibm_quantum", token=)
+print(provider.backends())
