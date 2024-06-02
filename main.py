@@ -1,5 +1,5 @@
 # Qiskit import
-from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister, QiskitError
+from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister, QiskitError, transpile
 from qiskit_ibm_provider import IBMProvider
 from qiskit.visualization import circuit_drawer
 
@@ -11,6 +11,7 @@ load_dotenv()
 imageFolder = "images/"
 # Load IBM Quantum Experience provider
 provider = IBMProvider(token=os.getenv("IBMQ_API_KEY"))
+print(provider.backends())
 
 def saveQuantumCircuit(qc: QuantumCircuit, name: str):
     qc.draw(output='mpl', filename=imageFolder + name + '.png')
@@ -30,7 +31,10 @@ def quantumHelloWorld():
     return qc
 
 def getBackend():
-    i = int(input())
-    return provider.get_backend(provider.backends()[i])
+    return provider.get_backend("ibm_kyoto")
 
 
+currBackend = getBackend()
+transpiled_qc = transpile(quantumHelloWorld(), currBackend)
+job = currBackend.run(transpiled_qc)
+print(f"Job ID: {job.job_id()}")
