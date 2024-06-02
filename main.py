@@ -51,6 +51,8 @@ def main():
     transpiled_qc = transpile(testApp(), currBackend)
     job = currBackend.run(transpiled_qc)
     print(f"Job ID: {job.job_id()}")
+    result = job.result()
+    print(result.get_counts(transpiled_qc))
 
 if __name__=="__main__":
     main()
