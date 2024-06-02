@@ -9,17 +9,22 @@ import os
 
 load_dotenv()
 imageFolder = "images/"
+
 # Load IBM Quantum Experience provider
 provider = IBMProvider(token=os.getenv("IBMQ_API_KEY"))
 print(provider.backends())
 
+# Helper functions
 def saveQuantumCircuit(qc: QuantumCircuit, name: str):
     qc.draw(output='mpl', filename=imageFolder + name + '.png')
     return name + '.png'
+def getBackend():
+    return provider.get_backend("ibm_kyoto")
 
+# Quantum Applications
 def quantumHelloWorld():
     # Create a Quantum Circuit acting on the 2 register
-    qc = QuantumCircuit(2)
+    qc = QuantumCircuit(4)
 
     # Add a H gate on qubit 0
     qc.h(0)
@@ -29,12 +34,23 @@ def quantumHelloWorld():
 
     saveQuantumCircuit(qc, 'quantum_hello_world')
     return qc
+def testApp():
+    # Create a Quantum Circuit acting on the 2 register
+    qc = QuantumCircuit(4)
 
-def getBackend():
-    return provider.get_backend("ibm_kyoto")
+    qc.h(0)
+    qc.cx(3, 0)
+    qc.h(2)
+    qc.cx(0, 1)
 
+    saveQuantumCircuit(qc, 'testApp')
+    return qc
 
-currBackend = getBackend()
-transpiled_qc = transpile(quantumHelloWorld(), currBackend)
-job = currBackend.run(transpiled_qc)
-print(f"Job ID: {job.job_id()}")
+def main():
+    currBackend  = getBackend()
+    transpiled_qc = transpile(testApp(), currBackend)
+    job = currBackend.run(transpiled_qc)
+    print(f"Job ID: {job.job_id()}")
+
+if __name__=="__main__":
+    main()
